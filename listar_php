@@ -1,0 +1,22 @@
+<?php
+
+$archivos = [];
+
+if (is_dir("archivos")) {
+
+    $lista = scandir("archivos");
+
+    foreach ($lista as $archivo) {
+
+        if ($archivo != "." && $archivo != "..") {
+
+            $archivos[] = $archivo;
+        }
+    }
+}
+
+header("Content-Type: application/json");
+
+echo json_encode($archivos);
+
+?>

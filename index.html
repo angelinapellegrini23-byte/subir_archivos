@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Subir archivos</title>
+
+    <link rel="stylesheet" href="estilo.css">
+</head>
+
+<body>
+
+    <div class="contenedor">
+
+        <h1>Subir archivos</h1>
+
+        <p class="descripcion">
+            Seleccioná un archivo para guardarlo en el servidor.
+        </p>
+
+        <form action="guardar.php" method="POST" enctype="multipart/form-data">
+
+            <label for="archivo">Seleccionar archivo</label>
+
+            <input
+                type="file"
+                name="archivo"
+                id="archivo"
+                accept=".jpg,.jpeg,.png,.pdf"
+                required
+            >
+
+            <p class="info">
+                Formatos permitidos: JPG, JPEG, PNG y PDF<br>
+                Tamaño máximo: 5 MB
+            </p>
+
+            <button type="submit">
+                Guardar archivo
+            </button>
+
+        </form>
+
+        <hr>
+
+        <h2>Archivos guardados</h2>
+
+        <div id="lista">
+            Cargando archivos...
+        </div>
+
+    </div>
+
+    <footer>
+        Proyecto de subida de archivos
+    </footer>
+
+    <script>
+
+        const parametros = new URLSearchParams(window.location.search);
+
+        if (parametros.has("exito")) {
+
+            document.getElementById("lista").innerHTML =
+                '<div class="mensaje exitoo">' +
+                parametros.get(" se a subido con exito") +
+                '</div>' +
+                '<p>Cargando archivos...</p>';
+
+        }
+
+        if (parametros.has("error")) {
+
+            document.getElementById("lista").innerHTML =
+                '<div class="mensaje error">' +
+                parametros.get("error al subir ") +
+                '</div>';
+
+        }
+
+
+        fetch("listar.php")
+
+            .then(respuesta => respuesta.json())
+
+            .then(archivos => {
+
+                const lista = document.getElementById("lista");
+
+                if (archivos.length === 0) {
+
+                    lista.innerHTML =
+                        '<p class="vacio">Todavía no hay archivos guardados.</p>';
+
+                } else {
+
+                    lista.innerHTML = "";
+
+                    archivos.forEach(archivo => {
+
+                        lista.innerHTML +=
+                            '<div class="archivo">' +
+                            '<span>📄</span>' +
+                            '<span>' + archivo + '</span>' +
+                            '</div>';
+
+                    });
+
+                }
+
+            })
+
+            .catch(() => {
+
+                document.getElementById("lista").innerHTML =
+                    '<p class="mensaje error">No se pudieron cargar los archivos.</p>';
+
+            });
+
+    </script>
+
+</body>
+
+</html>
